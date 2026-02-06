@@ -1,0 +1,27 @@
+﻿@model List<Reservation>
+
+<h2>Danh sách Reservation</h2>
+
+<a asp-action="Create">Thêm mới</a>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Name</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.StartLocation</td>
+            <td>@item.EndLocation</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

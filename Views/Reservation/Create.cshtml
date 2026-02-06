@@ -1,0 +1,10 @@
+﻿@model Reservation
+
+<h2>Thêm Reservation</h2>
+
+<form asp-action="Create" method="post">
+    <input asp-for="Name" placeholder="Name" /><br />
+    <input asp-for="StartLocation" placeholder="Start Location" /><br />
+    <input asp-for="EndLocation" placeholder="End Location" /><br />
+    <button type="submit">Save</button>
+</form>

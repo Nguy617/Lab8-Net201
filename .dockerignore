@@ -1,0 +1,9 @@
+bin/
+obj/
+publish/
+Deploy_Open_Me/
+Deploy_Open_Me_Fixed/
+.vscode/
+.git/
+*.zip
+*.log
