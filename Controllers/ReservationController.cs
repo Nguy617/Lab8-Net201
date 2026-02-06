@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Text;
+using Lab6.Services.Interfaces;
 
 public class ReservationController : Controller
 {
-    // Dynamic API URL - works in both local and production
+    private readonly IReservationService _service;
+
+    public ReservationController(IReservationService service)
+    {
+        _service = service;
+    }
 
     // ===== INDEX =====
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        HttpClient client = new HttpClient();
-        var apiUrl = $"{Request.Scheme}://{Request.Host}/api/Reservations";
-        var json = await client.GetStringAsync(apiUrl);
-        var data = JsonConvert.DeserializeObject<List<Reservation>>(json);
+        var data = _service.GetAll();
         return View(data);
     }
 
@@ -23,45 +24,31 @@ public class ReservationController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Reservation r)
+    public IActionResult Create(Reservation r)
     {
-        HttpClient client = new HttpClient();
-        var apiUrl = $"{Request.Scheme}://{Request.Host}/api/Reservations";
-        var json = JsonConvert.SerializeObject(r);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        await client.PostAsync(apiUrl, content);
+        _service.Add(r);
         return RedirectToAction("Index");
     }
 
     // ===== EDIT =====
-    public async Task<IActionResult> Edit(int id)
+    public IActionResult Edit(int id)
     {
-        HttpClient client = new HttpClient();
-        var apiUrl = $"{Request.Scheme}://{Request.Host}/api/Reservations";
-        var json = await client.GetStringAsync($"{apiUrl}/{id}");
-        var r = JsonConvert.DeserializeObject<Reservation>(json);
+        var r = _service.GetById(id);
+        if (r == null) return NotFound();
         return View(r);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(Reservation r)
+    public IActionResult Edit(Reservation r)
     {
-        HttpClient client = new HttpClient();
-        var apiUrl = $"{Request.Scheme}://{Request.Host}/api/Reservations";
-        var json = JsonConvert.SerializeObject(r);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        await client.PutAsync($"{apiUrl}/{r.Id}", content);
+        _service.Update(r);
         return RedirectToAction("Index");
     }
 
     // ===== DELETE =====
-    public async Task<IActionResult> Delete(int id)
+    public IActionResult Delete(int id)
     {
-        HttpClient client = new HttpClient();
-        var apiUrl = $"{Request.Scheme}://{Request.Host}/api/Reservations";
-        await client.DeleteAsync($"{apiUrl}/{id}");
+        _service.Delete(id);
         return RedirectToAction("Index");
     }
 }
